@@ -36,12 +36,14 @@ The platform is designed to support users who belong to multiple stores. Users c
 
 ### Backend & Database
 
-| Technology      | Version | Purpose                        |
-| --------------- | ------- | ------------------------------ |
-| PHP             | 8.5.11  | Runtime                        |
-| Laravel         | 13.33.0 | Backend framework and REST API |
-| PostgreSQL      | 18.6    | Primary relational database    |
-| Laravel Sanctum | 4.3.3   | API token authentication       |
+| Technology      | Version | Purpose                               |
+| --------------- | ------- | ------------------------------------- |
+| PHP             | 8.5.11  | Runtime                               |
+| Laravel         | 13.33.0 | Backend framework and REST API        |
+| PostgreSQL      | 18.6    | Primary relational database           |
+| Laravel Sanctum | 4.3.3   | API token authentication              |
+| Redis           | 8.10    | Caching and supporting infrastructure |
+| Predis          | 3.6.1   | Redis client                          |
 
 ### DevOps & Infrastructure
 
@@ -120,29 +122,26 @@ storegy-saas/
 
 ### Installation
 
-1. Clone the repository.
-
-   ```bash
-   git clone https://github.com/heshamadel1/storegy-sass.git
+```bash
+# 1. Clone the repository
+git clone git@github.com:heshamadel1/storegy-sass.git
    cd storegy-saas
-   ```
 
-2. Configure the environment files according to the project setup and the provided `.env.example` files.
+# 2. Copy environment file
+cp src/backend/.env.example src/backend/.env
 
-3. Build and start the development environment.
+# 3. Build and start containers
+docker compose up -d --build
 
-   ```bash
-   docker compose up -d --build
-   ```
+# 4. Install Composer dependencies
+docker compose exec workspace composer install
 
-4. Run database migrations from the appropriate application container.
+# 5. Generate application key
+docker compose exec workspace php artisan key:generate
 
-   ```bash
-   docker compose exec workspace bash
-   php artisan migrate
-   ```
-
-5. Start the frontend using the project's configured development workflow.
+# 6. Run database migrations
+docker compose exec workspace php artisan migrate
+```
 
 > **Note:** Exact service names, environment variables, and frontend startup commands depend on the current Docker Compose and package configuration.
 
@@ -151,6 +150,50 @@ storegy-saas/
 **Active Development**
 
 Storegy is being developed incrementally, with an emphasis on API design, tenant isolation, maintainable architecture, automated testing, and practical development workflows.
+
+---
+
+## 🎮 Available & Useful Commands
+
+The project uses a `Makefile` to simplify common Docker and Laravel operations.
+
+> **Note:** All `make` commands must be run from the project root (`~/Code/Projects/Storgy-sass/`).
+
+### 📋 Quick Reference
+
+Run `make help` to see all available commands.
+
+| Command       | Description                                   | Equivalent |
+| ------------- | --------------------------------------------- | ---------- |
+| `make help`   | Show all available commands                   | —          |
+| `make health` | Full health check (Docker + PHP + Redis + DB) | —          |
+
+---
+
+### 🐳 Docker Commands
+
+| Command        | Description                              | Equivalent                                      |
+| -------------- | ---------------------------------------- | ----------------------------------------------- |
+| `make up`      | Start all containers                     | `docker compose up -d`                          |
+| `make down`    | Stop all containers                      | `docker compose down`                           |
+| `make restart` | Restart all containers                   | `docker compose restart`                        |
+| `make ps`      | Show container status                    | `docker compose ps`                             |
+| `make logs`    | Follow logs                              | `docker compose logs -f`                        |
+| `make build`   | Rebuild `app` and `workspace` containers | `docker compose build --no-cache app workspace` |
+
+---
+
+### Artisan Commands
+
+| Command              | Description                | Equivalent                         |
+| -------------------- | -------------------------- | ---------------------------------- |
+| `make art CMD="..."` | Run any Artisan command    | `php artisan ...`                  |
+| `make migrate`       | Run migrations             | `php artisan migrate`              |
+| `make fresh`         | Fresh migration with seed  | `php artisan migrate:fresh --seed` |
+| `make tinker`        | Open Laravel Tinker REPL   | `php artisan tinker`               |
+| `make make routes`   | List all registered routes | `php artisan route:list`           |
+
+---
 
 ## 📄 License
 
