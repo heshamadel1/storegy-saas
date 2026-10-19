@@ -11,16 +11,20 @@ use Illuminate\Support\Facades\DB;
 
 class RegisterUser
 {
-    public function execute(string $name, string $email, string $password, string $deviceName)
+    /**
+     * @param array{name: string, email: string, password: string, device_name: string} $data
+     * @return array{user: User, token: string}
+     */
+    public function execute(array $data)
     {
-        return DB::transaction(function () use ($name, $email, $password, $deviceName): array {
+        return DB::transaction(function () use ($data): array {
             $user = User::create([
-                'name' => $name,
-                'email' => $email,
-                'password' => $password,
+                'name'     => $data['name'],
+                'email'    => $data['email'],
+                'password' => $data['password'],
             ]);
 
-            $token = $user->createToken($deviceName)->plainTextToken;
+            $token = $user->createToken($data['device_name'])->plainTextToken;
 
             return [
                 'user' => $user,

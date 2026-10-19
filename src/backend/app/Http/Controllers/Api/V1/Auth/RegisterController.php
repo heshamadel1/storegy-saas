@@ -13,18 +13,16 @@ use Illuminate\Http\JsonResponse;
 
 class RegisterController extends Controller
 {
+
     public function __invoke(RegisterRequest $request, RegisterUser $action): JsonResponse
     {
         $data = $request->validated();
 
-        $user = $action->execute(
-            name: $data['name'],
-            email: $data['email'],
-            password: $data['password'],
-            deviceName: $data['device_name'],
-        );
+        $user = $action->execute($data);
 
         return response()->json([
+            'success' => true,
+            'message' => 'Account created successfully.',
             'data' => [
                 'user' => new UserResource($user['user']),
                 'token' => $user['token'],
