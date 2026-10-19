@@ -38,3 +38,16 @@
 4. Token abilities are **not** a substitute for Policies and store membership checks.
 5. Login endpoints must be rate-limited.
 6. Tokens must **never** be logged.
+
+## Roles and permissions
+
+- roles must be scoped per store and enforced with composite foreign keys.
+- Tables: `roles` (belong to a store), `role_permissions`, and `store_memberships` (links a user, a store, and a role).
+
+### Rules
+
+1. Permissions are a fixed Backed Enum defined in code. `role_permissions` stores the enum value as text.
+2. Template roles (e.g., Manager, Inventory Clerk) are copied into each new store. Each store has exactly one protected Owner role.
+3. A user cannot grant a permission they do not have (no privilege escalation).
+4. Registration never accepts a role. A new user has no store and no role until they create a store or accept an invitation.
+5. Super Admin is assigned only through a seeder or an Artisan command, never through the API.
