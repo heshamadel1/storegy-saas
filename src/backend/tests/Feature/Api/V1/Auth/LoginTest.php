@@ -59,3 +59,28 @@ it('validates the required fields', function () {
         ->assertUnprocessable()
         ->assertJsonValidationErrors(['email', 'password', 'device_name']);
 });
+
+//<!----------------------------- LogOut Test --------------------------------------------->
+
+it('logs out the authenticated user by revoking their token', function () {
+    $user = User::factory()->create();
+
+    $token = $user->createToken('web')->plainTextToken;
+
+    $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        ->postJson('/api/v1/auth/logout');
+
+    $response
+        ->assertOk()
+        ->assertJson([
+            'success' => true,
+            'message' => 'Logged out successfully.',
+        ]);
+
+    expect($user->tokens()->count())->toBe(0);
+});
+
+it('rejects unauthenticated logout requests', function () {
+    $this->postJson('/api/v1/auth/logout')
+        ->assertUnauthorized();
+});
