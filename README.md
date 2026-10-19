@@ -11,7 +11,7 @@
 
 ## 📖 Overview
 
-Storegy is a multi-tenant e-commerce SaaS platform designed to enable multiple stores to operate within a shared application while maintaining store-level data isolation and access control.
+Storegy is a multi-tenant e-commerce SaaS platform designed to enable multiple stores to operate within a shared application while maintaining store-level data isolation and access control [**documentions & rules**](https://github.com/heshamadel1/storegy-saas/blob/main/docs/application-logic.md)
 
 The platform follows an **API-first architecture**, with a Laravel backend powering a Next.js dashboard. This separation provides a foundation for additional clients, such as mobile applications, without requiring a complete backend rewrite.
 
